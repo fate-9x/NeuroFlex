@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &142501644421444126
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3551375445987031089}
+  - component: {fileID: 2383410958371611485}
+  - component: {fileID: 9122646595957920044}
+  m_Layer: 0
+  m_Name: SpawnNumber
+  m_TagString: Spawn
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3551375445987031089
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 142501644421444126}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 4.207329, y: 1.8769888, z: -3.73}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2383410958371611485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 142501644421444126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4481f9449a964634a9b8f6f60b065aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numbers:
+  - {fileID: 919132149155446097, guid: 558c21467bad94caa8e9236df0699c50, type: 3}
+  - {fileID: 919132149155446097, guid: f57af001d0b9d43a8931911a047f96cf, type: 3}
+  - {fileID: 919132149155446097, guid: b410fa4e0ed16444284b305de6b8a04d, type: 3}
+  - {fileID: 919132149155446097, guid: 9d34ca14252b14241a53a73d6079aa34, type: 3}
+  - {fileID: 919132149155446097, guid: 71a97a736994b48e1ab515ea92a43717, type: 3}
+  - {fileID: 919132149155446097, guid: d198a92ecd2834fe1b9678cd7b789edd, type: 3}
+  - {fileID: 919132149155446097, guid: 437026ee7b60249aba83ed7e0da9fdeb, type: 3}
+  - {fileID: 919132149155446097, guid: bbb1731cfd3e3452f8510cdba92af5aa, type: 3}
+  - {fileID: 919132149155446097, guid: 8b03b7ba1ec45418d9e03d4ca32db57c, type: 3}
+  - {fileID: 919132149155446097, guid: f98172f25b460496ab66953d43cacb8a, type: 3}
+  toScale: {x: 1, y: 1, z: 1}
+--- !u!136 &9122646595957920044
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 142501644421444126}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
