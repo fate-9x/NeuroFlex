@@ -14,8 +14,10 @@
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
 # Ignorar configuraciones del proyecto
-/[Pp]rojectSettings/  
 /[Uu]serSettings/     
+
+# Ignorar OVRAssetBundles
+/[Oo][Vv][Rr][Aa]sset[Bb]undles/
 
 # Ignorar archivos de solución y proyecto
 *.csproj            
