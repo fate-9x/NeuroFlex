@@ -1,0 +1,43 @@
+# Ignorar carpetas generadas por Unity
+/[Ll]ibrary/          
+/[Tt]emp/            
+/[Oo]bj/               
+/[Bb]uild/             
+/[Bb]uilds/            
+/[Ll]ogs/              
+/[Uu]ser[Ss]ettings/  
+
+# Ignorar herramientas de la Asset Store
+/[Aa]ssets/AssetStoreTools/  
+
+# Ignorar archivos binarios de Addressables
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# Ignorar configuraciones del proyecto
+/[Pp]rojectSettings/  
+/[Uu]serSettings/     
+
+# Ignorar archivos de solución y proyecto
+*.csproj            
+*.unityproj         
+*.sln              
+*.userprefs          
+
+# Ignorar archivos generados
+*.pidb               
+*.booproj            
+*.suo                
+*.otron               
+.vs                   
+.vscode               
+.idea                 
+
+# Ignorar archivos de sistema
+.DS_Store             
+Thumbs.db             
+
+# Builds
+*.apk
+*.aab
+*.unitypackage
+*.app
