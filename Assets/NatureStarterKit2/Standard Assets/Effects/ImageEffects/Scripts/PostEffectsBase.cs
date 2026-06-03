@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace UnityStandardAssets.ImageEffects
@@ -94,12 +93,6 @@ namespace UnityStandardAssets.ImageEffects
             supportHDRTextures = SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf);
             supportDX11 = SystemInfo.graphicsShaderLevel >= 50 && SystemInfo.supportsComputeShaders;
 
-            if (!SystemInfo.supportsImageEffects || !SystemInfo.supportsRenderTextures)
-			{
-                NotSupported ();
-                return false;
-            }
-
             if (needDepth && !SystemInfo.SupportsRenderTextureFormat (RenderTextureFormat.Depth))
 			{
                 NotSupported ();
@@ -137,22 +130,6 @@ namespace UnityStandardAssets.ImageEffects
 		{
             Debug.LogWarning ("The image effect " + ToString() + " has been disabled as it's not supported on the current platform.");
         }
-
-        // deprecated but needed for old effects to survive upgrading
-        bool CheckShader (Shader s)
-		{
-            Debug.Log("The shader " + s.ToString () + " on effect "+ ToString () + " is not part of the Unity 3.2+ effects suite anymore. For best performance and quality, please ensure you are using the latest Standard Assets Image Effects (Pro only) package.");
-            if (!s.isSupported)
-			{
-                NotSupported ();
-                return false;
-            }
-            else
-			{
-                return false;
-            }
-        }
-
 
         protected void NotSupported ()
 		{

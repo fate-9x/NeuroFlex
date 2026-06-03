@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SubtitleManager : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class SubtitleManager : MonoBehaviour
     private void Start()
     {
         spawner = GameObject.Find("Utils").GetComponent<Spawner>();
-        audioManager = FindObjectOfType<AudioManager>(); // Obtener la instancia del AudioManager
+        audioManager = FindAnyObjectByType<AudioManager>();
         StartCoroutine(ShowSubtitles());
     }
 
@@ -36,7 +37,7 @@ public class SubtitleManager : MonoBehaviour
         IEnumerator WaitForInput()
         {
             yield return new WaitForSeconds(0.1f);
-            yield return new WaitUntil(() => OVRInput.GetDown(OVRInput.Button.One) || Input.GetKeyDown(KeyCode.Space));
+            yield return new WaitUntil(() => InputManager.Confirm.WasPressedThisFrame());
         }
         tutorialStartTime = Time.time;
         for (int i = 0; i < numberLinesWelcome; i++)
@@ -95,7 +96,7 @@ public class SubtitleManager : MonoBehaviour
             else if (i == 2)
             {
                 yield return new WaitForSeconds(0.1f);
-                yield return new WaitUntil(() => OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger) || OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger) || Input.GetKeyDown(KeyCode.Space));
+                yield return new WaitUntil(() => InputManager.SkipSubtitle.WasPressedThisFrame());
             }
             else
             {

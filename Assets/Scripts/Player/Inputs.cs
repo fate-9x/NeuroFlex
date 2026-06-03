@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.Networking;
 using System;
+using UnityEngine.InputSystem;
 public class Inputs : MonoBehaviour
 {
 
@@ -34,7 +35,7 @@ public class Inputs : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
-        apiManager = FindObjectOfType<APIManager>();
+        apiManager = FindAnyObjectByType<APIManager>();
         if (apiManager == null)
         {
             GameObject apiObj = new GameObject("APIManager");
@@ -66,28 +67,7 @@ public class Inputs : MonoBehaviour
                 timerTextMenu.text = gameTimer.timerText;
             }
         }
-        // Comprobar si se ha pulsado el botón de menú
-        // if (OVRInput.GetDown(OVRInput.Button.Start))
-        // {
-        //     // Si se ha pulsado el botón de menú, alternar la activación del objeto de menú
-        //     menuObject.SetActive(!menuObject.activeSelf);
-        // }
-        
-        // Comprobar si se ha pulsado el botón Y para probar la API
-        // if (OVRInput.GetDown(OVRInput.Button.Four) || Input.GetKeyDown(KeyCode.Y))
-        // {
-        //     textPlayerPositionY.text = "Botón Y presionado - Probando API...";
-        //     if (extractDataCollector != null)
-        //     {
-        //         extractDataCollector.SendDataToAPI();
-        //         textPlayerPositionY.text = "Llamando a SendDataToAPI() para probar la API";
-        //     }
-        //     else
-        //     {
-        //         textPlayerPositionY.text = "ExtractDataCollector no encontrado. No se puede probar la API.";
-        //     }
-        // }
-        if (OVRInput.GetDown(OVRInput.Button.One) || Input.GetKeyDown(KeyCode.Space))
+        if (InputManager.Confirm.WasPressedThisFrame())
         {
             if (screen.activeSelf)
             {

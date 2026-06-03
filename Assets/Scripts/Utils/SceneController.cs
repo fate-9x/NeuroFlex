@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class SceneController : MonoBehaviour
 {
@@ -104,10 +105,12 @@ public class SceneController : MonoBehaviour
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.M))
+#if UNITY_EDITOR
+        if (InputManager.DebugSkipScene.WasPressedThisFrame())
         {
             LoadScene("NatureScene");
         }
+#endif
     }
 
     // Funcion para obtener el nombre de la escena actual

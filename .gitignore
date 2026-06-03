@@ -1,45 +1,63 @@
-# Ignorar carpetas generadas por Unity
-/[Ll]ibrary/          
-/[Tt]emp/            
-/[Oo]bj/               
-/[Bb]uild/             
-/[Bb]uilds/            
-/[Ll]ogs/              
-/[Uu]ser[Ss]ettings/  
+# --- Unity Folders & Cache ---
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emory[Cc]aptures/
 
-# Ignorar herramientas de la Asset Store
-/[Aa]ssets/AssetStoreTools/  
-
-# Ignorar archivos binarios de Addressables
+# --- Addressables Generated Build Data ---
+# Se ignoran los datos construidos localmente, pero se mantienen las configuraciones de settings/grupos
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/Android/
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/Windows/
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/OSX/
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/StandaloneAndroid/
+/[Aa]ssets/StreamingAssets/aa/
 
-# Ignorar configuraciones del proyecto
-/[Uu]serSettings/     
-
-# Ignorar OVRAssetBundles
+# --- Asset Store & Custom Plugins ---
+/[Aa]ssets/AssetStoreTools/
 /[Oo][Vv][Rr][Aa]sset[Bb]undles/
 
-# Ignorar archivos de solución y proyecto
-*.csproj            
-*.unityproj         
-*.sln              
-*.userprefs          
+# --- IDE & Solution Files ---
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+*.db
+.vs/
+.vscode/
+.idea/
+*.ider/
 
-# Ignorar archivos generados
-*.pidb               
-*.booproj            
-*.suo                
-*.otron               
-.vs                   
-.vscode               
-.idea                 
+# --- OS System Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Ignorar archivos de sistema
-.DS_Store             
-Thumbs.db             
-
-# Builds
+# --- Build Outputs ---
 *.apk
 *.aab
 *.unitypackage
 *.app
+
+# --- Custom Exclusions ---
+/[Dd]ocs/
+/CLAUDE.md
+/.claude/
+/.utmp/
+/graphify-out/

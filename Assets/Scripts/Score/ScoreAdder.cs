@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Meta.WitAi;
 using UnityEngine;
 
 public class ScoreAdder : MonoBehaviour
