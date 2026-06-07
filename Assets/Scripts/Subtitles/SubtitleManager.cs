@@ -37,7 +37,7 @@ public class SubtitleManager : MonoBehaviour
         IEnumerator WaitForInput()
         {
             yield return new WaitForSeconds(0.1f);
-            yield return new WaitUntil(() => InputManager.Confirm.WasPressedThisFrame());
+            yield return new WaitUntil(() => ConfirmInput.ConfirmWasPressedThisFrame());
         }
         tutorialStartTime = Time.time;
         for (int i = 0; i < numberLinesWelcome; i++)
@@ -96,7 +96,7 @@ public class SubtitleManager : MonoBehaviour
             else if (i == 2)
             {
                 yield return new WaitForSeconds(0.1f);
-                yield return new WaitUntil(() => InputManager.SkipSubtitle.WasPressedThisFrame());
+                yield return new WaitUntil(() => ConfirmInput.SkipSubtitleWasPressedThisFrame());
             }
             else
             {

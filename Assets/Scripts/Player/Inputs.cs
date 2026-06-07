@@ -67,7 +67,7 @@ public class Inputs : MonoBehaviour
                 timerTextMenu.text = gameTimer.timerText;
             }
         }
-        if (InputManager.Confirm.WasPressedThisFrame())
+        if (ConfirmInput.ConfirmWasPressedThisFrame())
         {
             if (screen.activeSelf)
             {

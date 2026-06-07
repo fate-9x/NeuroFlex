@@ -7,7 +7,8 @@ using System;
 public class APIManager : MonoBehaviour
 {
     public ExtractData data = new ExtractData();
-    public string apiUrl = "https://f13h4cz6id.execute-api.sa-east-1.amazonaws.com/data";
+    public string apiUrl = "https://REPLACE_WITH_API_ID.execute-api.sa-east-1.amazonaws.com/prod/data";
+    [SerializeField] private string apiKey = "REPLACE_WITH_API_KEY";
     // Método para enviar JSON a una API y recibir la respuesta
     public void SendJsonToAPI(Action<string> onResponse)
     {
@@ -22,6 +23,7 @@ public class APIManager : MonoBehaviour
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
+        request.SetRequestHeader("x-api-key", apiKey);
 
         yield return request.SendWebRequest();
 

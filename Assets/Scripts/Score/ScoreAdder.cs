@@ -58,7 +58,7 @@ public class ScoreAdder : MonoBehaviour
     }
     
     public void AddScore() {
-        // Medir tiempo de captura y calcular precisión antes de destruir el objeto
+        if (isGrabbed) return;
         float captureTime = Time.time - spawnTime;
         
         // Obtener posición de las manos
