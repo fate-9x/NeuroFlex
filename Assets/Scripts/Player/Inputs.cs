@@ -1,18 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Networking;
-using System;
 using UnityEngine.InputSystem;
 public class Inputs : MonoBehaviour
 {
-
-    
-    [SerializeField] private GameObject menuObject;
-    [SerializeField] private TextMeshProUGUI timerTextMenu;
-    [SerializeField] private TextMeshProUGUI apiTextMenu;
-    [SerializeField] public TextMeshProUGUI textPlayerPositionY;
     [SerializeField] Animator animatorPlayer;
     [SerializeField] public GameObject screen;
     [SerializeField] public GameObject headPlayer;
@@ -58,15 +48,6 @@ public class Inputs : MonoBehaviour
     }
     void Update()
     {
-        GameObject utilsObject = GameObject.Find("Utils");
-        if (utilsObject != null)
-        {
-            GameTimer gameTimer = utilsObject.GetComponent<GameTimer>();
-            if (gameTimer != null)
-            {
-                timerTextMenu.text = gameTimer.timerText;
-            }
-        }
         if (ConfirmInput.ConfirmWasPressedThisFrame())
         {
             if (screen.activeSelf)
@@ -75,9 +56,6 @@ public class Inputs : MonoBehaviour
             }
             // Enviar JSON a la API al presionar espacio
 
-            //apiManager.SendJsonToAPI(apiUrl, jsonToSend, (response) => {
-            //    apiTextMenu.text = response;
-            //});
         }
         // Sentado = 1.35, de pie < 1.35
         if (flagInitMovement && numberSpawned)
@@ -90,24 +68,18 @@ public class Inputs : MonoBehaviour
             }
 
             float currentTime = Time.time - timerStartTime;
-            textPlayerPositionY.text = "Tiempo: " + currentTime.ToString() + " segundos";
-            
-            // Verificar si han pasado más de 13 segundos
+
             if (currentTime > 13f && isTimerRunning)
             {
                 responseTimePlayerUp = 0f;
                 isTimerRunning = false;
-                textPlayerPositionY.text = "Tiempo agotado: 0 segundos";
                 numberSpawned = false;
                 Debug.Log("Tiempo de respuesta para pararse agotado, asignado como 0");
             }
-            // Verificar si la posición Y de la cabeza es mayor a 1.35
             else if (headPlayer.transform.position.y > 1.35f && isTimerRunning)
             {
-                // Calcular el tiempo de respuesta
                 responseTimePlayerUp = Time.time - timerStartTime;
                 isTimerRunning = false;
-                textPlayerPositionY.text = "Tiempo: " + responseTimePlayerUp.ToString() + " segundos";
                 numberSpawned = false;
             }
         }
@@ -123,18 +95,14 @@ public class Inputs : MonoBehaviour
         if (animatorPlayer != null && screen != null && !flagInitMovement)
         {
             playerInitPositionY = headPlayer.transform.position.y;
-
-            if (playerInitPositionY < 1.35)
-            {
-                scoreManager.scoreNumbers = 0;
-                animatorPlayer.SetTrigger("Start");
-                screen.SetActive(false);
-                flagInitMovement = true;
-                // Iniciar temporizador de tarea activa
-                activeTaskStartTime = Time.time;
-                isActiveTaskTimerRunning = true;
-            }
+            scoreManager.scoreNumbers = 0;
+            animatorPlayer.SetTrigger("Start");
+            screen.SetActive(false);
+            flagInitMovement = true;
+            activeTaskStartTime = Time.time;
+            isActiveTaskTimerRunning = true;
         }
+        Debug.Log("StartMovement");
     }
 
     public void StopActiveTaskTimer()

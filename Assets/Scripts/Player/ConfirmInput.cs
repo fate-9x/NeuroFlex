@@ -9,7 +9,9 @@ public static class ConfirmInput
     public static void RaiseSkipSubtitle() => _skipFrame    = Time.frameCount;
 
     public static bool ConfirmWasPressedThisFrame() =>
-        InputManager.Confirm.WasPressedThisFrame() || _confirmFrame == Time.frameCount;
+        InputManager.Confirm.WasPressedThisFrame() ||
+        _confirmFrame == Time.frameCount ||
+        OVRInput.GetDown(OVRInput.Button.One);
 
     public static bool SkipSubtitleWasPressedThisFrame() =>
         InputManager.SkipSubtitle.WasPressedThisFrame() || _skipFrame == Time.frameCount;

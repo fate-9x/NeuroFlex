@@ -81,12 +81,31 @@ public class SceneController : MonoBehaviour
 
     IEnumerator LoadSceneWithLoadingScreen(string sceneName)
     {
-        foreach (FadeOVR screenFade in screenFades)
+        if (screenFades == null || screenFades.Length == 0)
         {
-            screenFade.FadeOut();
+            Debug.LogError("[SceneController] No FadeOVR cameras found — loading scene without fade");
+            SceneManager.LoadScene(sceneName);
+            yield break;
         }
 
-        yield return new WaitForSeconds(screenFades[0].fadeTime);
+        FadeOVR firstValidFade = null;
+        foreach (FadeOVR screenFade in screenFades)
+        {
+            if (screenFade != null)
+            {
+                firstValidFade = screenFade;
+                screenFade.FadeOut();
+            }
+        }
+
+        if (firstValidFade == null)
+        {
+            Debug.LogError("[SceneController] All FadeOVR references are null — loading scene without fade wait");
+            SceneManager.LoadScene(sceneName);
+            yield break;
+        }
+
+        yield return new WaitForSeconds(firstValidFade.fadeTime);
 
         // Si sceneName está vacío, carga la siguiente escena
         if (string.IsNullOrEmpty(sceneName))

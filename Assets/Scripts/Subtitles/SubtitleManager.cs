@@ -105,8 +105,14 @@ public class SubtitleManager : MonoBehaviour
             
         }
         tutorialEndTime = Time.time;
-        ExtractDataCollector extractDataCollector = GameObject.Find("Utils").GetComponent<ExtractDataCollector>();
-        extractDataCollector.ExtractTutorialTime();
+        GameObject utils = GameObject.Find("Utils");
+        if (utils != null)
+        {
+            ExtractDataCollector extractDataCollector = utils.GetComponent<ExtractDataCollector>();
+            if (extractDataCollector != null) extractDataCollector.ExtractTutorialTime();
+            else Debug.LogError("[SubtitleManager] ExtractDataCollector not found on Utils");
+        }
+        else Debug.LogError("[SubtitleManager] Utils GameObject not found");
         audioManager.subtitleAudioSource.Stop();
         sceneManager.LoadScene("SelectEnvironment");
     }
