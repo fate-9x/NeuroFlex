@@ -115,11 +115,10 @@ public class APIManager : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-        MetricsToken = null;
-
         if (request.result == UnityWebRequest.Result.Success)
         {
             onSuccess?.Invoke(true);
+            MetricsToken = null;
         }
         else
         {
