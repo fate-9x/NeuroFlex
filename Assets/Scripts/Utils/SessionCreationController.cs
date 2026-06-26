@@ -103,6 +103,12 @@ public class SessionCreationController : MonoBehaviour
 
             while (!completed) yield return null;
 
+            if (status == "unauthorized")
+            {
+                SetError("Sesi\u00f3n inv\u00e1lida. Reinicie la app.");
+                yield break;
+            }
+
             if (status == null)
             {
                 consecutivePollFailures++;

@@ -78,6 +78,14 @@ public class APIManager : MonoBehaviour
         request.SetRequestHeader("X-Metrics-Token", MetricsToken);
         yield return request.SendWebRequest();
 
+        if (request.responseCode == 401 || request.responseCode == 403)
+        {
+            Debug.LogWarning($"GetSessionStatus auth error ({(int)request.responseCode})");
+            onStatus?.Invoke("unauthorized");
+            request.Dispose();
+            yield break;
+        }
+
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogWarning($"GetSessionStatus error: {request.error}");
