@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -9,65 +7,62 @@ public class EndZone : MonoBehaviour
     [SerializeField] private Animator animatorPlayer;
     public TextMeshProUGUI SessionText;
     private ExtractDataCollector extractDataCollector;
+    private APIManager apiManager;
 
     private void Start()
     {
-        extractDataCollector = GameObject.Find("Utils").GetComponent<ExtractDataCollector>();
-        
-        // Suscribirse al evento para recibir el session_id
-        ExtractDataCollector.OnSessionIdReceived += OnSessionIdReceived;
-        
-        // Configurar texto inicial
-        if (SessionText != null)
+        GameObject utilsObj = GameObject.Find("Utils");
+        if (utilsObj != null)
         {
-            SessionText.text = "Obteniendo número de sesión...";
+            extractDataCollector = utilsObj.GetComponent<ExtractDataCollector>();
+            apiManager = utilsObj.GetComponent<APIManager>();
         }
-    }
-    
-    private void OnDestroy()
-    {
-        // Desuscribirse del evento para evitar memory leaks
-        ExtractDataCollector.OnSessionIdReceived -= OnSessionIdReceived;
-    }
-    
-    private void OnSessionIdReceived(string sessionId)
-    {
-        if (SessionText != null)
+
+        if (SessionText != null && apiManager != null && apiManager.SessionActive)
         {
-            if (!string.IsNullOrEmpty(sessionId))
-            {
-                string shortSessionId = sessionId.Length >= 8 ? sessionId.Substring(0, 8) : sessionId;
-                SessionText.text = $"Número de sesión: {shortSessionId}";
-            }
-            else
-            {
-                SessionText.text = "No se pudo obtener el número de sesión";
-            }
+            SessionText.text = $"N\u00famero de sesi\u00f3n: {apiManager.DisplayCode}";
+        }
+        else if (SessionText != null)
+        {
+            SessionText.text = "Esperando inicio de sesi\u00f3n...";
         }
     }
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Player")) {
-            Debug.Log("Player ha entrado en la zona final");
-            // Buscar el componente Animator utilizando Find
-            animatorPlayer.speed = 0;
-            dialogScreen.SetActive(true);
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+        Debug.Log("Player ha entrado en la zona final");
+        if (animatorPlayer != null) animatorPlayer.speed = 0;
+        if (dialogScreen != null) dialogScreen.SetActive(true);
+
+        if (extractDataCollector != null)
+        {
             extractDataCollector.CalculateAverageCaptureTime();
             extractDataCollector.CalculateAveragePrecision();
             extractDataCollector.ExtractScores();
             extractDataCollector.ExtractResponseTimePlayerUp();
 
-            // Detener temporizador de tarea activa y extraer el tiempo
             Inputs inputs = other.GetComponent<Inputs>();
             if (inputs != null)
             {
                 inputs.StopActiveTaskTimer();
                 extractDataCollector.ExtractActiveTaskTime();
                 inputs.ShowDebugData();
-                
-                
             }
+
             extractDataCollector.SendDataToAPI();
+            StartCoroutine(ShowCompletionTextAfterDelay());
+        }
+    }
+
+    private System.Collections.IEnumerator ShowCompletionTextAfterDelay()
+    {
+        yield return new WaitForSeconds(5f);
+
+        if (SessionText != null && apiManager != null)
+        {
+            string code = string.IsNullOrEmpty(apiManager.DisplayCode) ? "?" : apiManager.DisplayCode;
+            SessionText.text = $"{code}\nSesi\u00f3n completada";
         }
     }
 }
