@@ -11,6 +11,7 @@ public class APIManager : MonoBehaviour
     public string SessionId { get; private set; }
     public string MetricsToken { get; private set; }
     public string DisplayCode { get; private set; }
+    public int TtlSeconds { get; private set; }
     public bool SessionActive => !string.IsNullOrEmpty(MetricsToken);
 
     public void CreateSession(Action<bool> onSuccess)
@@ -52,6 +53,7 @@ public class APIManager : MonoBehaviour
         SessionId = response.session_id;
         MetricsToken = response.metrics_token;
         DisplayCode = response.display_code;
+        TtlSeconds = response.ttl_seconds > 0 ? response.ttl_seconds : 600;
         onSuccess?.Invoke(true);
         request.Dispose();
     }
@@ -129,6 +131,11 @@ public class APIManager : MonoBehaviour
         request.Dispose();
     }
 
+    public void ClearMetricsToken()
+    {
+        MetricsToken = null;
+    }
+
     public string GetJsonData()
     {
         return JsonUtility.ToJson(data);
@@ -150,7 +157,6 @@ public class APIManager : MonoBehaviour
         public string session_id;
         public string display_code;
         public string metrics_token;
-        public string status;
         public int ttl_seconds;
     }
 

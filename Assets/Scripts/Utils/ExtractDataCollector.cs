@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 using System.Linq;
 
 public class ExtractDataCollector : MonoBehaviour
@@ -130,12 +129,12 @@ public class ExtractDataCollector : MonoBehaviour
         }
     }
 
-    public void SendDataToAPI()
+    public void SendDataToAPI(System.Action<bool> onComplete = null)
     {
-        StartCoroutine(SendMetricsWithRetry(0));
+        StartCoroutine(SendMetricsWithRetry(0, onComplete));
     }
 
-    private IEnumerator SendMetricsWithRetry(int attempt)
+    private IEnumerator SendMetricsWithRetry(int attempt, System.Action<bool> onComplete = null)
     {
         const int maxAttempts = 3;
         Debug.Log($"Intento {attempt + 1} de {maxAttempts} para enviar m\u00e9tricas a la API");
@@ -157,6 +156,7 @@ public class ExtractDataCollector : MonoBehaviour
         if (requestSuccessful)
         {
             Debug.Log($"M\u00e9tricas enviadas exitosamente en intento {attempt + 1}. Token consumido.");
+            onComplete?.Invoke(true);
         }
         else
         {
@@ -165,11 +165,13 @@ public class ExtractDataCollector : MonoBehaviour
             {
                 Debug.Log($"Reintentando en 2 segundos... ({attempt + 2}/{maxAttempts})");
                 yield return new WaitForSeconds(2f);
-                yield return StartCoroutine(SendMetricsWithRetry(attempt + 1));
+                yield return StartCoroutine(SendMetricsWithRetry(attempt + 1, onComplete));
             }
             else
             {
+                apiManager.ClearMetricsToken();
                 Debug.LogError($"Fall\u00f3 enviar m\u00e9tricas despu\u00e9s de {maxAttempts} intentos.");
+                onComplete?.Invoke(false);
             }
         }
     }

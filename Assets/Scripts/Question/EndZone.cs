@@ -50,19 +50,15 @@ public class EndZone : MonoBehaviour
                 inputs.ShowDebugData();
             }
 
-            extractDataCollector.SendDataToAPI();
-            StartCoroutine(ShowCompletionTextAfterDelay());
-        }
-    }
-
-    private System.Collections.IEnumerator ShowCompletionTextAfterDelay()
-    {
-        yield return new WaitForSeconds(5f);
-
-        if (SessionText != null && apiManager != null)
-        {
-            string code = string.IsNullOrEmpty(apiManager.DisplayCode) ? "?" : apiManager.DisplayCode;
-            SessionText.text = $"{code}\nSesi\u00f3n completada";
+            string displayCode = apiManager != null ? apiManager.DisplayCode : null;
+            extractDataCollector.SendDataToAPI((success) =>
+            {
+                if (SessionText == null) return;
+                if (success)
+                    SessionText.text = $"{displayCode}\nSesi\u00f3n completada";
+                else
+                    SessionText.text = "Error al enviar m\u00e9tricas. Contacte al operador.";
+            });
         }
     }
 }

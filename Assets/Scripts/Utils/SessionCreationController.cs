@@ -17,7 +17,7 @@ public class SessionCreationController : MonoBehaviour
     private APIManager apiManager;
     private float sessionStartWallTime;
     private int ttlSeconds = DefaultTtlSeconds;
-    private int consecutivePollFailures;
+    private int consecutivePollFailures = 0;
 
     private void Start()
     {
@@ -62,7 +62,7 @@ public class SessionCreationController : MonoBehaviour
             }
             if (statusText != null) statusText.text = "Esperando confirmaci\u00f3n del operador...";
             sessionStartWallTime = Time.realtimeSinceStartup;
-            ttlSeconds = DefaultTtlSeconds;
+            ttlSeconds = apiManager.TtlSeconds > 0 ? apiManager.TtlSeconds : DefaultTtlSeconds;
             consecutivePollFailures = 0;
             yield return StartCoroutine(PollStatus());
         }
