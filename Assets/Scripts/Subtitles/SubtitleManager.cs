@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 public class SubtitleManager : MonoBehaviour
 {
-    [SerializeField] private Texts textsManager;
+    private Texts textsManager;
     [SerializeField] private TextMeshProUGUI subtitleText;
     [SerializeField] private Zone zone;
     [SerializeField] private SceneController sceneManager;
@@ -25,7 +25,12 @@ public class SubtitleManager : MonoBehaviour
 
     private void Start()
     {
-        spawner = GameObject.Find("Utils").GetComponent<Spawner>();
+        GameObject utils = GameObject.Find("Utils");
+        if (utils != null)
+        {
+            spawner = utils.GetComponent<Spawner>();
+            textsManager = utils.GetComponent<Texts>();
+        }
         audioManager = FindAnyObjectByType<AudioManager>();
         StartCoroutine(ShowSubtitles());
     }
