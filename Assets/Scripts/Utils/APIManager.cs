@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Security.Cryptography;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using System;
@@ -57,6 +59,84 @@ public class APIManager : MonoBehaviour
         TtlSeconds = response.ttl_seconds > 0 ? response.ttl_seconds : 600;
         onSuccess?.Invoke(true);
         request.Dispose();
+    }
+
+    public void GetCurrentTerms(Action<bool, TermsData> onResult)
+    {
+        StartCoroutine(GetCurrentTermsRequest(0, null, onResult));
+    }
+
+    private IEnumerator GetCurrentTermsRequest(int attempt, TermsData lastData, Action<bool, TermsData> onResult)
+    {
+        if (!ValidateConfig()) { onResult?.Invoke(false, null); yield break; }
+
+        string url = apiConfig.baseUrl.TrimEnd('/') + "/terms/current";
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        request.SetRequestHeader("Accept-Language", "es");
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogWarning($"GetCurrentTerms network error: {request.error}");
+            if (attempt < 2)
+            {
+                request.Dispose();
+                yield return new WaitForSeconds(2f);
+                yield return StartCoroutine(GetCurrentTermsRequest(attempt + 1, null, onResult));
+                yield break;
+            }
+            onResult?.Invoke(false, null);
+            request.Dispose();
+            yield break;
+        }
+
+        TermsData data = JsonUtility.FromJson<TermsData>(request.downloadHandler.text);
+        request.Dispose();
+
+        if (data == null || string.IsNullOrEmpty(data.content) || string.IsNullOrEmpty(data.content_hash))
+        {
+            Debug.LogWarning("GetCurrentTerms: parse error o campos vac\u00edos");
+            if (attempt < 2)
+            {
+                yield return new WaitForSeconds(2f);
+                yield return StartCoroutine(GetCurrentTermsRequest(attempt + 1, null, onResult));
+                yield break;
+            }
+            onResult?.Invoke(false, null);
+            yield break;
+        }
+
+        // Verificaci\u00f3n SHA-256
+        string computedHash = ComputeSha256(data.content);
+        if (!string.Equals(computedHash, data.content_hash, System.StringComparison.OrdinalIgnoreCase))
+        {
+            Debug.LogWarning($"GetCurrentTerms hash mismatch. computed={computedHash} expected={data.content_hash}");
+            if (attempt < 2)
+            {
+                yield return new WaitForSeconds(2f);
+                yield return StartCoroutine(GetCurrentTermsRequest(attempt + 1, null, onResult));
+                yield break;
+            }
+            onResult?.Invoke(false, null);
+            yield break;
+        }
+
+        onResult?.Invoke(true, data);
+    }
+
+    private static string ComputeSha256(string content)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(content);
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            byte[] hash = sha256.ComputeHash(bytes);
+            System.Text.StringBuilder sb = new System.Text.StringBuilder(64);
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("x2"));
+            }
+            return sb.ToString();
+        }
     }
 
     public void GetSessionStatus(Action<string> onStatus)
