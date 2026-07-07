@@ -161,6 +161,7 @@ public class TermsManager : MonoBehaviour
 
     public void AceptarOnClick()
     {
+        if (!scrollGatePassed) return;
         if (isAccepting) return;
         isAccepting = true;
         if (apiManager == null || string.IsNullOrEmpty(versionId) || string.IsNullOrEmpty(contentHash))
@@ -217,6 +218,6 @@ public class TermsManager : MonoBehaviour
     private void SetError(string msg)
     {
         if (errorText != null) errorText.text = msg;
-        Debug.LogError(msg);
+        Debug.LogWarning(msg);
     }
 }

@@ -51,7 +51,7 @@ public class APIManager : MonoBehaviour
             {
                 LastCreateSessionUnauthorized = true;
             }
-            Debug.LogWarning($"CreateSession error: {request.error}");
+            Debug.LogWarning($"CreateSession error: {request.error} (code {request.responseCode})");
             onSuccess?.Invoke(false);
             request.Dispose();
             yield break;
@@ -78,10 +78,10 @@ public class APIManager : MonoBehaviour
 
     public void GetCurrentTerms(Action<bool, TermsData> onResult)
     {
-        StartCoroutine(GetCurrentTermsRequest(0, null, onResult));
+        StartCoroutine(GetCurrentTermsRequest(0, onResult));
     }
 
-    private IEnumerator GetCurrentTermsRequest(int attempt, TermsData lastData, Action<bool, TermsData> onResult)
+    private IEnumerator GetCurrentTermsRequest(int attempt, Action<bool, TermsData> onResult)
     {
         if (!ValidateConfig()) { onResult?.Invoke(false, null); yield break; }
 
@@ -97,7 +97,7 @@ public class APIManager : MonoBehaviour
             {
                 request.Dispose();
                 yield return new WaitForSeconds(2f);
-                yield return StartCoroutine(GetCurrentTermsRequest(attempt + 1, null, onResult));
+                yield return StartCoroutine(GetCurrentTermsRequest(attempt + 1, onResult));
                 yield break;
             }
             onResult?.Invoke(false, null);
@@ -114,7 +114,7 @@ public class APIManager : MonoBehaviour
             if (attempt < 2)
             {
                 yield return new WaitForSeconds(2f);
-                yield return StartCoroutine(GetCurrentTermsRequest(attempt + 1, null, onResult));
+                yield return StartCoroutine(GetCurrentTermsRequest(attempt + 1, onResult));
                 yield break;
             }
             onResult?.Invoke(false, null);
@@ -129,7 +129,7 @@ public class APIManager : MonoBehaviour
             if (attempt < 2)
             {
                 yield return new WaitForSeconds(2f);
-                yield return StartCoroutine(GetCurrentTermsRequest(attempt + 1, null, onResult));
+                yield return StartCoroutine(GetCurrentTermsRequest(attempt + 1, onResult));
                 yield break;
             }
             onResult?.Invoke(false, null);
