@@ -17,17 +17,27 @@ public class APIManager : MonoBehaviour
     public string AcceptanceToken { get; set; }
     public bool SessionActive => !string.IsNullOrEmpty(MetricsToken);
 
-    public void CreateSession(Action<bool> onSuccess)
+    public void CreateSession(string acceptanceToken, Action<bool> onSuccess)
     {
-        StartCoroutine(CreateSessionRequest(onSuccess));
+        if (string.IsNullOrEmpty(acceptanceToken))
+        {
+            Debug.LogWarning("CreateSession: acceptanceToken vac\u00edo");
+            onSuccess?.Invoke(false);
+            return;
+        }
+        StartCoroutine(CreateSessionRequest(acceptanceToken, onSuccess));
     }
 
-    private IEnumerator CreateSessionRequest(Action<bool> onSuccess)
+    private IEnumerator CreateSessionRequest(string acceptanceToken, Action<bool> onSuccess)
     {
+        LastCreateSessionUnauthorized = false;
+
         if (!ValidateConfig()) { onSuccess?.Invoke(false); yield break; }
 
+        SessionRequest body = new SessionRequest { acceptance_token = acceptanceToken };
+        string jsonBody = JsonUtility.ToJson(body);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
         string url = apiConfig.baseUrl.TrimEnd('/') + "/sessions";
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes("{}");
         UnityWebRequest request = new UnityWebRequest(url, "POST");
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -37,6 +47,10 @@ public class APIManager : MonoBehaviour
 
         if (request.result != UnityWebRequest.Result.Success)
         {
+            if (request.responseCode == 401 || request.responseCode == 403)
+            {
+                LastCreateSessionUnauthorized = true;
+            }
             Debug.LogWarning($"CreateSession error: {request.error}");
             onSuccess?.Invoke(false);
             request.Dispose();
@@ -57,6 +71,7 @@ public class APIManager : MonoBehaviour
         MetricsToken = response.metrics_token;
         DisplayCode = response.display_code;
         TtlSeconds = response.ttl_seconds > 0 ? response.ttl_seconds : 600;
+        LastCreateSessionUnauthorized = false;
         onSuccess?.Invoke(true);
         request.Dispose();
     }
@@ -349,6 +364,8 @@ public class APIManager : MonoBehaviour
     {
         public string status;
     }
+
+    public bool LastCreateSessionUnauthorized { get; private set; }
 
     [System.Serializable]
     public class ExtractData
