@@ -33,6 +33,12 @@ public class SessionCreationController : MonoBehaviour
             return;
         }
 
+        if (string.IsNullOrEmpty(apiManager.AcceptanceToken))
+        {
+            SetError("Sesi\u00f3n no iniciada. Reinicie la app.");
+            return;
+        }
+
         if (statusText != null) statusText.text = "Creando sesi\u00f3n...";
         if (errorText != null) errorText.text = "";
         if (displayCodeText != null) displayCodeText.text = "";
@@ -46,10 +52,12 @@ public class SessionCreationController : MonoBehaviour
 
         bool completed = false;
         bool success = false;
-        apiManager.CreateSession(s =>
+        bool unauthorized = false;
+        apiManager.CreateSession(apiManager.AcceptanceToken, s =>
         {
             completed = true;
             success = s;
+            unauthorized = apiManager.LastCreateSessionUnauthorized;
         });
 
         while (!completed) yield return null;
@@ -68,6 +76,11 @@ public class SessionCreationController : MonoBehaviour
         }
         else
         {
+            if (unauthorized)
+            {
+                SetError("Sesi\u00f3n no iniciada. Reinicie la app.");
+                yield break;
+            }
             if (attempt < MaxCreateAttempts - 1)
             {
                 Debug.Log($"Reintentando CreateSession en {RetryDelay}s ({attempt + 2}/{MaxCreateAttempts})");
