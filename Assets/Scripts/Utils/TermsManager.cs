@@ -2,13 +2,14 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Oculus.Interaction;
 
 public class TermsManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text termsTitleText;
     [SerializeField] private TMP_Text termsContentText;
-    [SerializeField] private Button aceptarButton;
-    [SerializeField] private Button rechazarButton;
+    [SerializeField] private GameObject aceptarButton;
+    [SerializeField] private GameObject rechazarButton;
     [SerializeField] private TMP_Text errorText;
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private SceneController sceneController;
@@ -17,6 +18,8 @@ public class TermsManager : MonoBehaviour
     private string versionId;
     private string contentHash;
     private bool scrollGatePassed;
+    private bool isAccepting;
+    private Button aceptarBtnComponent;
 
     private void Start()
     {
@@ -34,8 +37,19 @@ public class TermsManager : MonoBehaviour
 
         if (aceptarButton != null)
         {
-            aceptarButton.interactable = false;
-            aceptarButton.onClick.AddListener(AceptarOnClick);
+            aceptarBtnComponent = aceptarButton.GetComponent<Button>();
+            if (aceptarBtnComponent != null)
+            {
+                aceptarBtnComponent.onClick.AddListener(AceptarOnClick);
+            }
+            else
+            {
+                var wrapper = aceptarButton.GetComponent<InteractableUnityEventWrapper>();
+                if (wrapper != null)
+                {
+                    wrapper.WhenSelect.AddListener(AceptarOnClick);
+                }
+            }
         }
         // rechazarButton ya wired a QuitApplication en la escena; no sobreescribir.
         if (scrollRect != null)
@@ -82,7 +96,7 @@ public class TermsManager : MonoBehaviour
         contentHash = data.content_hash;
         scrollGatePassed = false;
         SetButtonsVisible(true);
-        if (aceptarButton != null) aceptarButton.interactable = false;
+        if (aceptarBtnComponent != null) aceptarBtnComponent.interactable = false;
         // El scroll-gate se evalúa en el primer LateUpdate y vía onValueChanged.
         EvaluateScrollGate();
     }
@@ -94,7 +108,7 @@ public class TermsManager : MonoBehaviour
 
     private void EvaluateScrollGate()
     {
-        if (aceptarButton == null || !aceptarButton.gameObject.activeSelf) return;
+        if (aceptarButton == null || !aceptarButton.activeSelf) return;
         if (scrollGatePassed) return;
 
         bool atBottom;
@@ -118,7 +132,7 @@ public class TermsManager : MonoBehaviour
         if (atBottom)
         {
             scrollGatePassed = true;
-            aceptarButton.interactable = true;
+            if (aceptarBtnComponent != null) aceptarBtnComponent.interactable = true;
             if (errorText != null && errorText.text.Contains("Deslice"))
             {
                 errorText.text = "";
@@ -126,7 +140,7 @@ public class TermsManager : MonoBehaviour
         }
         else
         {
-            aceptarButton.interactable = false;
+            if (aceptarBtnComponent != null) aceptarBtnComponent.interactable = false;
             if (errorText != null)
             {
                 errorText.text = "Deslice hasta el final para aceptar";
@@ -147,12 +161,15 @@ public class TermsManager : MonoBehaviour
 
     public void AceptarOnClick()
     {
+        if (isAccepting) return;
+        isAccepting = true;
         if (apiManager == null || string.IsNullOrEmpty(versionId) || string.IsNullOrEmpty(contentHash))
         {
             SetError("Términos no cargados. Reinicie la app.");
+            isAccepting = false;
             return;
         }
-        if (aceptarButton != null) aceptarButton.interactable = false;
+        if (aceptarBtnComponent != null) aceptarBtnComponent.interactable = false;
         if (errorText != null) errorText.text = "";
         StartCoroutine(AcceptTermsCoroutine());
     }
@@ -174,11 +191,13 @@ public class TermsManager : MonoBehaviour
         if (!ok || string.IsNullOrEmpty(token))
         {
             SetError("Error al aceptar. Reintente.");
-            if (aceptarButton != null) aceptarButton.interactable = true;
+            if (aceptarBtnComponent != null) aceptarBtnComponent.interactable = true;
+            isAccepting = false;
             yield break;
         }
 
         // AcceptanceToken ya guardado en APIManager por AcceptTerms.
+        isAccepting = false;
         if (sceneController != null)
         {
             sceneController.LoadScene("CreateSession");
@@ -191,8 +210,8 @@ public class TermsManager : MonoBehaviour
 
     private void SetButtonsVisible(bool visible)
     {
-        if (aceptarButton != null) aceptarButton.gameObject.SetActive(visible);
-        if (rechazarButton != null) rechazarButton.gameObject.SetActive(visible);
+        if (aceptarButton != null) aceptarButton.SetActive(visible);
+        if (rechazarButton != null) rechazarButton.SetActive(visible);
     }
 
     private void SetError(string msg)
