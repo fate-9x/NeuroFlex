@@ -12,6 +12,7 @@ public class APIManager : MonoBehaviour
     public string MetricsToken { get; private set; }
     public string DisplayCode { get; private set; }
     public int TtlSeconds { get; private set; }
+    public string AcceptanceToken { get; set; }
     public bool SessionActive => !string.IsNullOrEmpty(MetricsToken);
 
     public void CreateSession(Action<bool> onSuccess)
@@ -157,6 +158,38 @@ public class APIManager : MonoBehaviour
             return false;
         }
         return true;
+    }
+
+    [System.Serializable]
+    public class TermsData
+    {
+        public string version_id;
+        public string language;
+        public string title;
+        public string content;
+        public string content_hash;
+        public string created_at;
+    }
+
+    [System.Serializable]
+    private class AcceptRequest
+    {
+        public string version_id;
+        public string content_hash;
+        public string application_version;
+    }
+
+    [System.Serializable]
+    private class AcceptResponse
+    {
+        public string acceptance_token;
+        public string expires_at;
+    }
+
+    [System.Serializable]
+    private class SessionRequest
+    {
+        public string acceptance_token;
     }
 
     [System.Serializable]
