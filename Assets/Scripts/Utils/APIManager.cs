@@ -139,6 +139,69 @@ public class APIManager : MonoBehaviour
         }
     }
 
+    public void AcceptTerms(string versionId, string contentHash, Action<bool, string> onResult)
+    {
+        StartCoroutine(AcceptTermsRequest(versionId, contentHash, 0, onResult));
+    }
+
+    private IEnumerator AcceptTermsRequest(string versionId, string contentHash, int attempt, Action<bool, string> onResult)
+    {
+        if (!ValidateConfig()) { onResult?.Invoke(false, null); yield break; }
+
+        AcceptRequest body = new AcceptRequest
+        {
+            version_id = versionId,
+            content_hash = contentHash,
+            application_version = Application.version
+        };
+        string jsonBody = JsonUtility.ToJson(body);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+
+        string url = apiConfig.baseUrl.TrimEnd('/') + "/terms/accept";
+        UnityWebRequest request = new UnityWebRequest(url, "POST");
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.SetRequestHeader("Accept-Language", "es");
+
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogWarning($"AcceptTerms error: {request.error} (code {request.responseCode})");
+            if (attempt < 2)
+            {
+                request.Dispose();
+                yield return new WaitForSeconds(2f);
+                yield return StartCoroutine(AcceptTermsRequest(versionId, contentHash, attempt + 1, onResult));
+                yield break;
+            }
+            onResult?.Invoke(false, null);
+            request.Dispose();
+            yield break;
+        }
+
+        string responseText = request.downloadHandler.text;
+        request.Dispose();
+
+        AcceptResponse response = JsonUtility.FromJson<AcceptResponse>(responseText);
+        if (response == null || string.IsNullOrEmpty(response.acceptance_token))
+        {
+            Debug.LogWarning($"AcceptTerms parse error: {responseText}");
+            if (attempt < 2)
+            {
+                yield return new WaitForSeconds(2f);
+                yield return StartCoroutine(AcceptTermsRequest(versionId, contentHash, attempt + 1, onResult));
+                yield break;
+            }
+            onResult?.Invoke(false, null);
+            yield break;
+        }
+
+        AcceptanceToken = response.acceptance_token;
+        onResult?.Invoke(true, response.acceptance_token);
+    }
+
     public void GetSessionStatus(Action<string> onStatus)
     {
         StartCoroutine(GetSessionStatusRequest(onStatus));
