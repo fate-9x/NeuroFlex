@@ -31,7 +31,7 @@ public class SceneController : MonoBehaviour
         // Obtiene el nombre de la escena actual
         string sceneName = GetCurrentSceneName();
 
-        if(sceneName == "NatureScene" || sceneName == "City")
+        if(sceneName == "NatureScene2" || sceneName == "City2")
         {
             StartCoroutine(LoadFadeIn(10.0f));
         }
@@ -71,8 +71,8 @@ public class SceneController : MonoBehaviour
         {
             // Puedes traducir el nombre si quieres mostrarlo en inglés
             int tipoEscena = 0;
-            if (sceneName == "NatureScene") tipoEscena = 1;
-            else if (sceneName == "City") tipoEscena = 2;
+            if (sceneName == "NatureScene2") tipoEscena = 1;
+            else if (sceneName == "City2") tipoEscena = 2;
             apiManager.data.TipoEscena = tipoEscena;
         }
 
@@ -127,7 +127,7 @@ public class SceneController : MonoBehaviour
 #if UNITY_EDITOR
         if (InputManager.DebugSkipScene.WasPressedThisFrame())
         {
-            LoadScene("NatureScene");
+            LoadScene("NatureScene2");
         }
 #endif
     }

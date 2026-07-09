@@ -12,12 +12,12 @@ NeuroFlex is a VR cognitive rehabilitation application built in Unity 2022.3.28f
 ## Scene Flow
 
 ```
-Start → MiniMental → SelectEnvironment → City | NatureScene → FinalScene
+Start → MiniMental → SelectEnvironment → City2 | NatureScene2 → FinalScene
 ```
 
 - `Start`: initial screen, shows welcome subtitles/tutorial via `SubtitleManager`
 - `SelectEnvironment`: patient selects City or Nature environment; sets `TipoEscena` in `APIManager.data`
-- `City` / `NatureScene`: main gameplay — patient completes zones with number-grabbing + math questions
+- `City2` / `NatureScene2`: main gameplay — patient completes zones with number-grabbing + math questions
 - `FinalScene`: shows results and session ID after data POSTs to AWS API
 
 Scene transitions are managed by `SceneController.LoadScene(sceneName)`, which fades out via `FadeOVR` before loading.

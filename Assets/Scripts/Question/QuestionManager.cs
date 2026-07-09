@@ -114,7 +114,7 @@ public class QuestionManager : MonoBehaviour
                     Material instanceMaterial = new Material(backgroundRenderer.material);
                     backgroundRenderer.material = instanceMaterial;
                     // Verde #47C241 convertido a RGB (71, 194, 65)
-                    instanceMaterial.SetColor("_Color", new Color(71f/255f, 194f/255f, 65f/255f, 0.5f));
+                    instanceMaterial.SetColor("_BaseColor", new Color(71f/255f, 194f/255f, 65f/255f, 0.5f));
                     ScoreManager scoreManager = GameObject.Find("Utils").GetComponent<ScoreManager>();
                     scoreManager.scoreQuestions += 1;
                 }
@@ -127,7 +127,7 @@ public class QuestionManager : MonoBehaviour
                     Material instanceMaterial = new Material(backgroundRenderer.material);
                     backgroundRenderer.material = instanceMaterial;
                     // Rojo #C24144 convertido a RGB (194, 65, 68)
-                    instanceMaterial.SetColor("_Color", new Color(194f/255f, 65f/255f, 68f/255f, 0.5f));
+                    instanceMaterial.SetColor("_BaseColor", new Color(194f/255f, 65f/255f, 68f/255f, 0.5f));
                 }
             }
 
