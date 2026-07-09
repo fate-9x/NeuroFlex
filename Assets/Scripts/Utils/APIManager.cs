@@ -233,9 +233,12 @@ public class APIManager : MonoBehaviour
         }
 
         string url = apiConfig.baseUrl.TrimEnd('/') + "/sessions/" + UnityWebRequest.EscapeURL(SessionId);
+        Debug.Log($"[APIManager] GetSessionStatus URL: {url}");
         UnityWebRequest request = UnityWebRequest.Get(url);
         request.SetRequestHeader("X-Metrics-Token", MetricsToken);
         yield return request.SendWebRequest();
+
+        Debug.Log($"[APIManager] GetSessionStatus responseCode={request.responseCode}, result={request.result}, error={request.error}");
 
         if (request.responseCode == 401 || request.responseCode == 403)
         {
@@ -253,7 +256,10 @@ public class APIManager : MonoBehaviour
             yield break;
         }
 
-        SessionStatusResponse response = JsonUtility.FromJson<SessionStatusResponse>(request.downloadHandler.text);
+        string responseText = request.downloadHandler.text;
+        Debug.Log($"[APIManager] GetSessionStatus raw response: {responseText}");
+        SessionStatusResponse response = JsonUtility.FromJson<SessionStatusResponse>(responseText);
+        Debug.Log($"[APIManager] GetSessionStatus parsed status: {(response == null ? "<parse null>" : response.status)}");
         onStatus?.Invoke(response == null ? null : response.status);
         request.Dispose();
     }

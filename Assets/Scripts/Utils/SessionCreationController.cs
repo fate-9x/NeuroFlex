@@ -22,9 +22,11 @@ public class SessionCreationController : MonoBehaviour
     private void Start()
     {
         GameObject utilsObj = GameObject.Find("Utils");
+        Debug.Log($"[SessionCreationController] Utils found: {utilsObj != null}");
         if (utilsObj != null)
         {
             apiManager = utilsObj.GetComponent<APIManager>();
+            Debug.Log($"[SessionCreationController] APIManager found: {apiManager != null}");
         }
 
         if (apiManager == null)
@@ -33,6 +35,7 @@ public class SessionCreationController : MonoBehaviour
             return;
         }
 
+        Debug.Log($"[SessionCreationController] AcceptanceToken present: {!string.IsNullOrEmpty(apiManager.AcceptanceToken)}");
         if (string.IsNullOrEmpty(apiManager.AcceptanceToken))
         {
             SetError("Sesi\u00f3n no iniciada. Reinicie la app.");
@@ -64,6 +67,7 @@ public class SessionCreationController : MonoBehaviour
 
         if (success)
         {
+            Debug.Log($"[SessionCreationController] CreateSession OK. SessionId={apiManager.SessionId}, DisplayCode={apiManager.DisplayCode}, TTL={apiManager.TtlSeconds}");
             if (displayCodeText != null && !string.IsNullOrEmpty(apiManager.DisplayCode))
             {
                 displayCodeText.text = apiManager.DisplayCode;
@@ -76,6 +80,7 @@ public class SessionCreationController : MonoBehaviour
         }
         else
         {
+            Debug.Log($"[SessionCreationController] CreateSession failed. unauthorized={unauthorized}");
             if (unauthorized)
             {
                 SetError("Sesi\u00f3n no iniciada. Reinicie la app.");
@@ -108,6 +113,7 @@ public class SessionCreationController : MonoBehaviour
 
             bool completed = false;
             string status = null;
+            Debug.Log("[SessionCreationController] Polling session status...");
             apiManager.GetSessionStatus(s =>
             {
                 completed = true;
@@ -115,6 +121,8 @@ public class SessionCreationController : MonoBehaviour
             });
 
             while (!completed) yield return null;
+
+            Debug.Log($"[SessionCreationController] Status received: {(status ?? "<null>")}");
 
             if (status == "unauthorized")
             {
@@ -125,7 +133,7 @@ public class SessionCreationController : MonoBehaviour
             if (status == null)
             {
                 consecutivePollFailures++;
-                Debug.LogWarning($"Poll fallido consecutivo #{consecutivePollFailures}");
+                Debug.LogWarning($"[SessionCreationController] Poll fallido consecutivo #{consecutivePollFailures}");
                 if (consecutivePollFailures >= 5 && statusText != null)
                 {
                     statusText.text = "Reintentando conexi\u00f3n...";

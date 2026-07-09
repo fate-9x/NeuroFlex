@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
 using Oculus.Interaction;
 
 public class TermsManager : MonoBehaviour
@@ -157,6 +158,16 @@ public class TermsManager : MonoBehaviour
         {
             EvaluateScrollGate();
         }
+    }
+
+    private void Update()
+    {
+#if UNITY_EDITOR
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame && scrollGatePassed && !isAccepting)
+        {
+            AceptarOnClick();
+        }
+#endif
     }
 
     public void AceptarOnClick()
