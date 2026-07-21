@@ -37,7 +37,7 @@ public class SceneController : MonoBehaviour
         }
         else
         {
-            StartCoroutine(LoadFadeIn(1.0f));
+            StartCoroutine(LoadFadeIn(0.5f));
         }
     }
 

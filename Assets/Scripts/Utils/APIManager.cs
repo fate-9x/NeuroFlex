@@ -387,5 +387,6 @@ public class APIManager : MonoBehaviour
         public float TiempoCapturarNumero;
         public float TiempoTutorial;
         public int TipoEscena;
+        public float TiempoReaccionVisual;
     }
 }

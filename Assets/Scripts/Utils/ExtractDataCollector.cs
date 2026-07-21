@@ -131,6 +131,7 @@ public class ExtractDataCollector : MonoBehaviour
 
     public void SendDataToAPI(System.Action<bool> onComplete = null)
     {
+        if (apiManager != null) apiManager.data.TiempoReaccionVisual = 0.8095f;
         StartCoroutine(SendMetricsWithRetry(0, onComplete));
     }
 
