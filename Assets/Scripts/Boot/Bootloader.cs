@@ -126,26 +126,43 @@ public class Bootloader : MonoBehaviour
 
         while (true)
         {
-            bool paired = false;
+            bool startDone = false;
+            PairingClient.PairingStartResult start = null;
+            yield return lan.StartPairing(r => { start = r; startDone = true; });
+            while (!startDone) yield return null;
+
+            if (start == null || !start.success)
+            {
+                if (statusText != null) statusText.text = start?.error ?? "Error iniciando emparejamiento";
+                yield return new WaitForSeconds(2f);
+                if (statusText != null) statusText.text = "Reintentando emparejamiento...";
+                yield return new WaitForSeconds(2f);
+                continue;
+            }
+
+            if (displayCodeText != null)
+                displayCodeText.text = start.pin;
+
+            if (statusText != null)
+                statusText.text = "Muestra este PIN al especialista...";
+
+            bool pollDone = false;
             PairingClient.PairingResult result = null;
-            yield return lan.Pair(r => { result = r; paired = true; });
-            while (!paired) yield return null;
+            yield return lan.PollPairing(start, r => { result = r; pollDone = true; });
+            while (!pollDone) yield return null;
 
             if (result.success)
             {
+                if (statusText != null) statusText.text = "Emparejamiento confirmado.";
                 break;
             }
 
+            if (statusText != null) statusText.text = result.error ?? "Emparejamiento fallido";
+            yield return new WaitForSeconds(2f);
             if (statusText != null) statusText.text = "Reintentando emparejamiento...";
             yield return new WaitForSeconds(2f);
         }
 
-        if (displayCodeText != null)
-            displayCodeText.text = lan.CurrentPin;
-
-        if (statusText != null) statusText.text = "Esperando confirmación del especialista...";
-
-        // Ahora sí, los términos están disponibles en el dashboard.
         if (sceneController != null)
         {
             sceneController.LoadScene("TerminosYCondiciones");

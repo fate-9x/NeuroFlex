@@ -202,18 +202,58 @@ public class LanBackend : IBackend
         }
 
         bool done = false;
-        PairingClient.PairingResult result = null;
-        yield return PairingClient.RequestPairing(_baseUrl, _config, r =>
-        {
-            result = r;
-            done = true;
-        });
+        PairingClient.PairingStartResult start = null;
+        yield return PairingClient.StartPairing(_baseUrl, r => { start = r; done = true; });
         while (!done) yield return null;
 
-        if (result != null && !string.IsNullOrEmpty(result.pin))
+        if (start == null || !start.success)
         {
-            CurrentPin = result.pin;
+            onDone?.Invoke(new PairingClient.PairingResult { success = false, pin = start?.pin, error = start?.error });
+            yield break;
         }
+
+        CurrentPin = start.pin;
+        done = false;
+        PairingClient.PairingResult result = null;
+        yield return PairingClient.PollPairing(_baseUrl, start.pairing_id, start.pin, _config, r => { result = r; done = true; });
+        while (!done) yield return null;
+
+        onDone?.Invoke(result);
+    }
+
+    public IEnumerator StartPairing(Action<PairingClient.PairingStartResult> onDone)
+    {
+        yield return EnsureDashboardUrl();
+        if (string.IsNullOrEmpty(_baseUrl))
+        {
+            onDone?.Invoke(new PairingClient.PairingStartResult { success = false, error = "No se encontró dashboard" });
+            yield break;
+        }
+
+        bool done = false;
+        PairingClient.PairingStartResult start = null;
+        yield return PairingClient.StartPairing(_baseUrl, r => { start = r; done = true; });
+        while (!done) yield return null;
+
+        if (start != null && start.success)
+            CurrentPin = start.pin;
+
+        onDone?.Invoke(start);
+    }
+
+    public IEnumerator PollPairing(PairingClient.PairingStartResult start, Action<PairingClient.PairingResult> onDone)
+    {
+        if (start == null || !start.success || string.IsNullOrEmpty(start.pairing_id))
+        {
+            onDone?.Invoke(new PairingClient.PairingResult { success = false, error = "Solicitud de emparejamiento no iniciada" });
+            yield break;
+        }
+
+        bool done = false;
+        PairingClient.PairingResult result = null;
+        yield return PairingClient.PollPairing(_baseUrl, start.pairing_id, start.pin, _config, r => { result = r; done = true; });
+        while (!done) yield return null;
+
         onDone?.Invoke(result);
     }
 
