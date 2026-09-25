@@ -27,18 +27,46 @@ public static class DiscoveryService
         AndroidJavaObject multicastLock = AcquireMulticastLock();
         try
         {
-            using (UdpClient udp = new UdpClient())
-            {
-                udp.EnableBroadcast = true;
-                udp.Client.ReceiveTimeout = config.discoveryTimeoutMs;
-                byte[] magic = Encoding.ASCII.GetBytes(config.discoveryMagic);
-                udp.Send(magic, magic.Length, new IPEndPoint(IPAddress.Broadcast, config.discoveryPort));
+            int attempts = Mathf.Max(1, config.discoveryAttempts);
+            byte[] magic = Encoding.ASCII.GetBytes(config.discoveryMagic);
+            IPEndPoint broadcastEndpoint = new IPEndPoint(IPAddress.Broadcast, config.discoveryPort);
 
-                IPEndPoint remote = new IPEndPoint(IPAddress.Any, 0);
-                byte[] reply = udp.Receive(ref remote);
-                string text = Encoding.ASCII.GetString(reply);
-                return ParseResponse(config, text);
+            for (int i = 0; i < attempts; i++)
+            {
+                Debug.Log($"[DiscoveryService] Discovery attempt {i + 1}/{attempts}");
+                using (UdpClient udp = new UdpClient())
+                {
+                    udp.EnableBroadcast = true;
+                    udp.Client.ReceiveTimeout = config.discoveryTimeoutMs;
+                    udp.Send(magic, magic.Length, broadcastEndpoint);
+
+                    IPEndPoint remote = new IPEndPoint(IPAddress.Any, 0);
+                    try
+                    {
+                        byte[] reply = udp.Receive(ref remote);
+                        string text = Encoding.ASCII.GetString(reply);
+                        string parsed = ParseResponse(config, text);
+                        if (!string.IsNullOrEmpty(parsed))
+                        {
+                            Debug.Log($"[DiscoveryService] Discovery succeeded on attempt {i + 1}");
+                            return parsed;
+                        }
+                    }
+                    catch (SocketException ex) when (ex.SocketErrorCode == SocketError.TimedOut)
+                    {
+                        Debug.LogWarning($"[DiscoveryService] Attempt {i + 1} timed out");
+                    }
+                }
+
+                if (i < attempts - 1)
+                {
+                    int delayMs = Mathf.RoundToInt(config.discoveryRetryInterval * 1000f);
+                    if (delayMs > 0)
+                        System.Threading.Thread.Sleep(delayMs);
+                }
             }
+
+            return null;
         }
         catch (Exception ex)
         {
