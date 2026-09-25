@@ -26,6 +26,13 @@ public class Bootloader : MonoBehaviour
 
         while (!decided)
         {
+#if UNITY_EDITOR
+            if (F4Pressed())
+            {
+                EnterMode(APIManager.BackendMode.Offline);
+                yield break;
+            }
+#endif
             bool leftGrip = OVRInput.Get(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.Touch);
             bool rightGrip = OVRInput.Get(OVRInput.Button.SecondaryHandTrigger, OVRInput.Controller.Touch);
             bool bothGrips = leftGrip && rightGrip;
@@ -68,7 +75,13 @@ public class Bootloader : MonoBehaviour
     private void UpdateUI(bool bothGrips)
     {
         if (statusText == null) return;
-
+#if UNITY_EDITOR
+        if (!bothGrips && !decided)
+        {
+            statusText.text += "  [F4: probar offline]";
+            return;
+        }
+#endif
         if (bothGrips)
         {
             statusText.text = $"Modo offline en {Mathf.Max(0, offlineHoldTime - gripElapsed):F1} s";
@@ -171,6 +184,20 @@ public class Bootloader : MonoBehaviour
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("TerminosYCondiciones");
         }
+    }
+
+    private static bool F4Pressed()
+    {
+#if ENABLE_INPUT_SYSTEM
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        if (keyboard != null && keyboard.f4Key.wasPressedThisFrame)
+            return true;
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
+        return Input.GetKeyDown(KeyCode.F4);
+#else
+        return false;
+#endif
     }
 
     private void SetError(string msg)
