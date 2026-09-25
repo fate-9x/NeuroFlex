@@ -72,6 +72,27 @@ public static class DiscoveryService
         return null;
     }
 
+    public static string TryManualUrl(LanConfig config)
+    {
+        string url = config.manualDashboardUrl?.Trim();
+        if (string.IsNullOrEmpty(url))
+            return null;
+
+        if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+        {
+            Debug.LogWarning($"[DiscoveryService] URL manual debe usar http:// o https://: {url}");
+            return null;
+        }
+
+        if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
+        {
+            Debug.LogWarning($"[DiscoveryService] URL manual inválida: {url}");
+            return null;
+        }
+
+        return url.TrimEnd('/');
+    }
+
     private static bool IsValidHost(string host)
     {
         return !string.IsNullOrEmpty(host)

@@ -245,7 +245,16 @@ public class LanBackend : IBackend
         }
         else
         {
-            Debug.LogWarning("[LanBackend] Dashboard not found");
+            string manual = DiscoveryService.TryManualUrl(_config);
+            if (!string.IsNullOrEmpty(manual))
+            {
+                _baseUrl = manual;
+                Debug.Log($"[LanBackend] Using manual dashboard URL {_baseUrl}");
+            }
+            else
+            {
+                Debug.LogWarning("[LanBackend] Dashboard not found and no manual URL configured");
+            }
         }
     }
 }

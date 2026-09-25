@@ -15,6 +15,12 @@ public class LanConfig : ScriptableObject
     [Tooltip("Prefijo esperado en la respuesta del dashboard")]
     public string expectedResponsePrefix = "NEUROFLEX_HERE";
 
+    [Tooltip("URL manual del dashboard si el discovery UDP falla (ej. http://192.168.1.50:8000). Dejar vacío para usar solo discovery.")]
+    public string manualDashboardUrl = "";
+
+    [Tooltip("Número máximo de intentos de discovery UDP antes de pasar al fallback manual")]
+    public int discoveryAttempts = 3;
+
     [Tooltip("Intervalo inicial de reintento de discovery en segundos")]
     public float discoveryRetryInterval = 3f;
 
