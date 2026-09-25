@@ -19,7 +19,7 @@ public class SessionCreationController : MonoBehaviour
     private int ttlSeconds = DefaultTtlSeconds;
     private int consecutivePollFailures = 0;
 
-    private void Start()
+    private IEnumerator Start()
     {
         GameObject utilsObj = GameObject.Find("Utils");
         Debug.Log($"[SessionCreationController] Utils found: {utilsObj != null}");
@@ -32,14 +32,14 @@ public class SessionCreationController : MonoBehaviour
         if (apiManager == null)
         {
             SetError("No se encontr\u00f3 APIManager en Utils.");
-            return;
+            yield break;
         }
 
         Debug.Log($"[SessionCreationController] AcceptanceToken present: {!string.IsNullOrEmpty(apiManager.AcceptanceToken)}");
         if (string.IsNullOrEmpty(apiManager.AcceptanceToken))
         {
             SetError("Sesi\u00f3n no iniciada. Reinicie la app.");
-            return;
+            yield break;
         }
 
         if (statusText != null) statusText.text = "Creando sesi\u00f3n...";

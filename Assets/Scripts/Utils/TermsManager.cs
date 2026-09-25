@@ -91,7 +91,14 @@ public class TermsManager : MonoBehaviour
             yield break;
         }
 
-        if (termsTitleText != null) termsTitleText.text = data.title;
+        if (apiManager.Mode == APIManager.BackendMode.Offline && termsTitleText != null)
+        {
+            termsTitleText.text = $"{data.title} - Modo local";
+        }
+        else if (termsTitleText != null)
+        {
+            termsTitleText.text = data.title;
+        }
         if (termsContentText != null) termsContentText.text = data.content;
         versionId = data.version_id;
         contentHash = data.content_hash;
