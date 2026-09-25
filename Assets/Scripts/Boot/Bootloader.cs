@@ -75,25 +75,24 @@ public class Bootloader : MonoBehaviour
     private void UpdateUI(bool bothGrips)
     {
         if (statusText == null) return;
-#if UNITY_EDITOR
-        if (!bothGrips && !decided)
-        {
-            statusText.text += "  [F4: probar offline]";
-            return;
-        }
-#endif
+        string text;
         if (bothGrips)
         {
-            statusText.text = $"Modo offline en {Mathf.Max(0, offlineHoldTime - gripElapsed):F1} s";
+            text = $"Modo offline en {Mathf.Max(0, offlineHoldTime - gripElapsed):F1} s";
         }
         else if (hasInternet)
         {
-            statusText.text = $"Mantén ambos botones laterales para modo offline. Modo online en {Mathf.Max(0, onlineTimeout - elapsed):F1} s";
+            text = $"Mantén ambos botones laterales para modo offline. Modo online en {Mathf.Max(0, onlineTimeout - elapsed):F1} s";
         }
         else
         {
-            statusText.text = $"Sin conexión. Modo offline en {Mathf.Max(0, onlineTimeout - elapsed):F1} s";
+            text = $"Sin conexión. Modo offline en {Mathf.Max(0, onlineTimeout - elapsed):F1} s";
         }
+#if UNITY_EDITOR
+        if (!decided)
+            text += "  [F4: probar offline]";
+#endif
+        statusText.text = text;
     }
 
     private void EnterMode(APIManager.BackendMode mode)
