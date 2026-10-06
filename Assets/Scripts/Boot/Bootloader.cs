@@ -88,10 +88,6 @@ public class Bootloader : MonoBehaviour
         {
             text = $"Sin conexión. Modo offline en {Mathf.Max(0, onlineTimeout - elapsed):F1} s";
         }
-#if UNITY_EDITOR
-        if (!decided)
-            text += "  [F4: probar offline]";
-#endif
         statusText.text = text;
     }
 

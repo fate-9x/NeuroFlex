@@ -69,10 +69,14 @@ public class SessionCreationController : MonoBehaviour
         if (success)
         {
             Debug.Log($"[SessionCreationController] CreateSession OK. SessionId={apiManager.SessionId}, TTL={apiManager.TtlSeconds}");
+            bool online = apiManager.Mode == APIManager.BackendMode.Online;
             if (displayCodeText != null)
             {
-                displayCodeText.text = "";
-                displayCodeText.gameObject.SetActive(false);
+                displayCodeText.gameObject.SetActive(online);
+                if (online)
+                {
+                    displayCodeText.text = $"PIN de emparejamiento\n{apiManager.DisplayCode}";
+                }
             }
             if (statusText != null) statusText.text = WaitingLinkMessage;
             sessionStartWallTime = Time.realtimeSinceStartup;
