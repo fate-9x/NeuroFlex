@@ -1,0 +1,218 @@
+{
+  "proyecto": {
+    "nombre": "NeuroFlex",
+    "stack": [
+      "Unity"
+    ],
+    "generado_por": "nexus init"
+  },
+  "excluir": [
+    "**/__pycache__/**",
+    "**/*.pyc",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.venv/**",
+    "**/venv/**",
+    "**/Library/**",
+    "**/Temp/**",
+    "**/obj/**"
+  ],
+  "secciones": [
+    {
+      "nombre": "Tests",
+      "descripcion": "Pruebas automáticas: no afectan al usuario final.",
+      "rutas": [
+        "**/tests/**",
+        "**/test/**",
+        "**/__tests__/**",
+        "**/Tests/**",
+        "**/test_*.py",
+        "**/*_test.py",
+        "**/tests.py",
+        "**/conftest.py",
+        "**/*_test.go",
+        "**/*.test.js",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.spec.js",
+        "**/*.spec.ts",
+        "**/*.spec.tsx",
+        "pytest.ini"
+      ]
+    },
+    {
+      "nombre": "Escenas y prefabs",
+      "descripcion": "Escenas y objetos prefabricados del juego.",
+      "rutas": [
+        "**/*.unity",
+        "**/*.prefab"
+      ]
+    },
+    {
+      "nombre": "Scripts de juego",
+      "descripcion": "Comportamiento del juego (C#).",
+      "rutas": [
+        "Assets/**/*.cs"
+      ]
+    },
+    {
+      "nombre": "Recursos gráficos y audio",
+      "descripcion": "Texturas, materiales, modelos y sonidos.",
+      "rutas": [
+        "**/*.mat",
+        "**/*.png",
+        "**/*.jpg",
+        "**/*.fbx",
+        "**/*.anim",
+        "**/*.controller",
+        "**/*.wav",
+        "**/*.mp3",
+        "**/*.shader",
+        "**/*.asset"
+      ]
+    },
+    {
+      "nombre": "Configuración",
+      "descripcion": "Dependencias, ajustes, compilación y despliegue.",
+      "rutas": [
+        "package.json",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml",
+        "requirements*.txt",
+        "pyproject.toml",
+        "setup.py",
+        "setup.cfg",
+        "Pipfile",
+        "Pipfile.lock",
+        "poetry.lock",
+        "Cargo.toml",
+        "Cargo.lock",
+        "go.mod",
+        "go.sum",
+        "**/*.csproj",
+        "**/*.sln",
+        "**/Dockerfile",
+        "**/docker-compose*.yml",
+        ".github/**",
+        ".gitlab-ci.yml",
+        ".gitignore",
+        ".gitattributes",
+        "**/*.ini",
+        "**/*.toml",
+        "**/*.cfg",
+        "**/.env*",
+        "**/*.config.js",
+        "**/*.config.ts",
+        "**/*.config.mjs",
+        "tsconfig*.json",
+        "**/settings*.py",
+        "manage.py",
+        "ProjectSettings/**",
+        "Packages/manifest.json",
+        "nexus-diff.config.json"
+      ]
+    },
+    {
+      "nombre": "Datos",
+      "descripcion": "Modelos, migraciones, esquemas y datos.",
+      "rutas": [
+        "**/migrations/**",
+        "**/models.py",
+        "**/models/**",
+        "**/schema.*",
+        "**/*.sql",
+        "**/*.prisma",
+        "**/fixtures/**",
+        "**/seeds/**",
+        "**/data/**",
+        "**/*.csv"
+      ]
+    },
+    {
+      "nombre": "Backend / API",
+      "descripcion": "Lógica de servidor: rutas, vistas, controladores y servicios.",
+      "rutas": [
+        "**/views.py",
+        "**/urls.py",
+        "**/forms.py",
+        "**/serializers.py",
+        "**/services.py",
+        "**/api/**",
+        "**/routes/**",
+        "**/controllers/**",
+        "**/handlers/**",
+        "**/services/**",
+        "**/server/**"
+      ]
+    },
+    {
+      "nombre": "UI / Diseño",
+      "descripcion": "Interfaz: plantillas, componentes, estilos y recursos visuales.",
+      "rutas": [
+        "**/templates/**",
+        "**/components/**",
+        "**/pages/**",
+        "**/static/**",
+        "**/public/**",
+        "**/assets/**",
+        "**/styles/**",
+        "**/*.html",
+        "**/*.css",
+        "**/*.scss",
+        "**/*.vue",
+        "**/*.svelte",
+        "**/*.jsx",
+        "**/*.tsx",
+        "**/*.uxml",
+        "**/*.uss"
+      ]
+    },
+    {
+      "nombre": "Herramientas",
+      "descripcion": "Scripts auxiliares y utilidades de desarrollo.",
+      "rutas": [
+        "scripts/**",
+        "tools/**",
+        "bin/**",
+        "**/*.sh",
+        "**/*.ps1",
+        "**/*.bat",
+        "Makefile"
+      ]
+    },
+    {
+      "nombre": "Documentación",
+      "descripcion": "Textos explicativos, guías y notas.",
+      "rutas": [
+        "**/*.md",
+        "docs/**",
+        "**/*.rst",
+        "**/*.txt"
+      ]
+    },
+    {
+      "nombre": "Lógica de aplicación",
+      "descripcion": "Resto del código.",
+      "rutas": [
+        "**/*.py",
+        "**/*.js",
+        "**/*.mjs",
+        "**/*.ts",
+        "**/*.go",
+        "**/*.rs",
+        "**/*.cs",
+        "**/*.java",
+        "**/*.kt",
+        "**/*.rb",
+        "**/*.php",
+        "**/*.c",
+        "**/*.cpp",
+        "**/*.h",
+        "**/*.swift",
+        "**/*.lua"
+      ]
+    }
+  ]
+}

@@ -13,6 +13,7 @@ public class SessionCreationController : MonoBehaviour
     private const int DefaultTtlSeconds = 600;
     private const int MaxCreateAttempts = 3;
     private const float RetryDelay = 2f;
+    private const string WaitingLinkMessage = "Esperando Vinculaci\u00f3n\nEl especialista debe vincularse con tu sesi\u00f3n";
 
     private APIManager apiManager;
     private float sessionStartWallTime;
@@ -67,12 +68,13 @@ public class SessionCreationController : MonoBehaviour
 
         if (success)
         {
-            Debug.Log($"[SessionCreationController] CreateSession OK. SessionId={apiManager.SessionId}, DisplayCode={apiManager.DisplayCode}, TTL={apiManager.TtlSeconds}");
-            if (displayCodeText != null && !string.IsNullOrEmpty(apiManager.DisplayCode))
+            Debug.Log($"[SessionCreationController] CreateSession OK. SessionId={apiManager.SessionId}, TTL={apiManager.TtlSeconds}");
+            if (displayCodeText != null)
             {
-                displayCodeText.text = apiManager.DisplayCode;
+                displayCodeText.text = "";
+                displayCodeText.gameObject.SetActive(false);
             }
-            if (statusText != null) statusText.text = "Esperando confirmaci\u00f3n del operador...";
+            if (statusText != null) statusText.text = WaitingLinkMessage;
             sessionStartWallTime = Time.realtimeSinceStartup;
             ttlSeconds = apiManager.TtlSeconds > 0 ? apiManager.TtlSeconds : DefaultTtlSeconds;
             consecutivePollFailures = 0;
@@ -142,7 +144,7 @@ public class SessionCreationController : MonoBehaviour
             }
 
             consecutivePollFailures = 0;
-            if (statusText != null) statusText.text = "Esperando confirmaci\u00f3n del operador...";
+            if (statusText != null) statusText.text = WaitingLinkMessage;
 
             if (status == "confirmed")
             {

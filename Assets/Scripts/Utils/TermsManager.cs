@@ -170,9 +170,33 @@ public class TermsManager : MonoBehaviour
     private void Update()
     {
 #if UNITY_EDITOR
-        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame && scrollGatePassed && !isAccepting)
+        if (Keyboard.current == null || isAccepting || !aceptarButton.activeSelf) return;
+
+        if (Keyboard.current.yKey.wasPressedThisFrame)
         {
-            AceptarOnClick();
+            if (scrollGatePassed)
+            {
+                AceptarOnClick();
+            }
+            else
+            {
+                if (errorText != null) errorText.text = "Deslice hasta el final para aceptar";
+            }
+        }
+        else if (Keyboard.current.nKey.wasPressedThisFrame)
+        {
+            QuitApplication quit = rechazarButton != null ? rechazarButton.GetComponent<QuitApplication>() : null;
+            if (quit != null)
+            {
+                quit.Quit();
+            }
+            else
+            {
+                Application.Quit();
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            }
         }
 #endif
     }
